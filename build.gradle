@@ -35,6 +35,9 @@ dependencies {
 
 	compile group: 'org.mindrot', name: 'jbcrypt', version: '0.3m'
 
+	runtime('org.springframework.boot:spring-boot-devtools')
+	runtime('com.h2database:h2')
+
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'mysql:mysql-connector-java'
 	annotationProcessor 'org.projectlombok:lombok'

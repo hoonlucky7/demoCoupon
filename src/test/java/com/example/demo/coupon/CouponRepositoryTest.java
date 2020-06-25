@@ -1,7 +1,6 @@
 package com.example.demo.coupon;
 
 import com.example.demo.common.StatusEnum;
-import com.example.demo.common.util.SequenceGenerator;
 import com.example.demo.coupon.dto.CouponDto;
 import com.example.demo.exception.ApiException;
 import com.example.demo.user.User;
@@ -28,12 +27,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(SpringExtension.class)
-@Import({CouponServiceImpl.class, CouponRepository.class, UserRepository.class, SequenceGenerator.class})
+@Import({CouponServiceImpl.class, CouponRepository.class, UserRepository.class})
 @ActiveProfiles("test")
-public class CouponServiceTest {
-
-	@Autowired
-	SequenceGenerator sequenceGenerator;
+public class CouponRepositoryTest {
 
 	@Autowired
 	private CouponService couponService;

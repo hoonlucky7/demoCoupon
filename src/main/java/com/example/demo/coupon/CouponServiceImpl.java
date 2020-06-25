@@ -2,7 +2,6 @@ package com.example.demo.coupon;
 
 import com.example.demo.common.ErrorCode;
 import com.example.demo.common.StatusEnum;
-import com.example.demo.common.util.SequenceGenerator;
 import com.example.demo.coupon.dto.CouponDto;
 import com.example.demo.exception.ApiException;
 import com.example.demo.user.User;
@@ -32,9 +31,6 @@ public class CouponServiceImpl implements CouponService {
 	@Autowired
 	UserRepository userRepository;
 
-	@Autowired
-	SequenceGenerator sequenceGenerator;
-
 	@Override
 	public List<Coupon> findAll() {
 		return couponRepository.findAll();
@@ -46,7 +42,7 @@ public class CouponServiceImpl implements CouponService {
 		List<Coupon> couponList = new ArrayList<>();
 		for (int i = 0; i < count; i++) {
 			Coupon coupon = new Coupon();
-			coupon.setCode(String.valueOf(sequenceGenerator.nextId()));
+			coupon.setCode(UUID.randomUUID().toString());
 			coupon.setExpirationDate(DateUtil.trimPlusDay(3)); // 3일뒤 00:00:00에 만료
 			coupon.setStatus(StatusEnum.N);
 			couponList.add(coupon);

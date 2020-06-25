@@ -1,0 +1,21 @@
+server:
+  port: 8080
+
+###
+#   Database Settings
+###
+spring:
+  datasource:
+    url: jdbc:h2:mem:coupon;DB_CLOSE_ON_EXIT=FALSE;
+    platform: h2
+    username: hoon
+    password:
+    driverClassName: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    show_sql: true
+    use_sql_comments: true
+    format_sql: true
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Seoul

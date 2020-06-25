@@ -3,17 +3,7 @@
 - openjdk version "1.8.0_252"
 - spring boot
 - jpa hibernate
-
-### 
-- mysql 세팅
-- mysql 로컬 pc에 설치해야함
-- Ver 8.0.20-0ubuntu0.20.04.1 for Linux on x86_64 ((Ubuntu))
-``` bash
-$ sudo mysql
-mysql> create database COUPON_WEB;
-mysql> create user 'hoon'@'%' identified by '1q2w3e';
-mysql> grant all on COUPON_WEB.* to 'hoon'@'%'; 
-```
+- h2
 
 ## 실행 방법
 ``` bash
@@ -55,7 +45,7 @@ ex) curl -X GET "http://localhost:8080/api/coupon/expired" -H "accept: */*" -H "
 
 
 ### 문제 해결 전략
-- 쿠폰은 유니크 해야 하므로 Twitter snowflake(분산처리 환경)를 이용해서 생성했음
+- 쿠폰은 유니크 해야 하므로 uuid를 이용해서 생성했음
 - 패스워드는 BCrypt로 암호화
 - jwt를 통한 인증 구현
 - 필터를 이용해서 token이 invalid하거나 만료됐는 지 체크
