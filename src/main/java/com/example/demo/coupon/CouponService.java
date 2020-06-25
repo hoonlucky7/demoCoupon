@@ -9,9 +9,9 @@ import java.util.List;
 
 public interface CouponService {
 
-	Page<Coupon> findAll(Pageable pageable);
+	List<Coupon> findAll();
 
-	void create(Integer count);
+	List<Coupon> create(Integer count);
 
 	CouponDto allocate(UserDto userDto);
 

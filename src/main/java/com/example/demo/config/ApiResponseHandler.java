@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.lang.annotation.Annotation;
 
 
-@ControllerAdvice(basePackages = {"com.example.demo.coupon"})
+@ControllerAdvice(basePackages = {"com.example.demo"})
 public class ApiResponseHandler implements ResponseBodyAdvice<Object> {
 	@Override
 	public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {

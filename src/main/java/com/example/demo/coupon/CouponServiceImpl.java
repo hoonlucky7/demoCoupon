@@ -7,8 +7,8 @@ import com.example.demo.exception.ApiException;
 import com.example.demo.user.User;
 import com.example.demo.user.UserRepository;
 import com.example.demo.user.dto.UserDto;
-import com.example.demo.util.DateUtil;
-import com.example.demo.util.FormatUtil;
+import com.example.demo.common.util.DateUtil;
+import com.example.demo.common.util.FormatUtil;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -35,13 +34,13 @@ public class CouponServiceImpl implements CouponService {
 	UserRepository userRepository;
 
 	@Override
-	public Page<Coupon> findAll(Pageable pageable) {
-		return couponRepository.findAll(pageable);
+	public List<Coupon> findAll() {
+		return couponRepository.findAll();
 	}
 
 	@Override
 	@Transactional
-	public void create(Integer count) {
+	public List<Coupon> create(Integer count) {
 		//TODO : count >= 10000, 쿠폰 발행이 개수가 많아지면 멀티 쓰레딩으로 처리 해야 함
 		List<Coupon> couponList = new ArrayList<>();
 		for (int i = 0; i < count; i++) {
@@ -51,7 +50,7 @@ public class CouponServiceImpl implements CouponService {
 			coupon.setStatus(StatusEnum.N);
 			couponList.add(coupon);
 		}
-		couponRepository.saveAll(couponList);
+		return couponRepository.saveAll(couponList);
 	}
 
 	@Override
@@ -107,7 +106,7 @@ public class CouponServiceImpl implements CouponService {
 
 	@Override
 	public void sendExpiredAfter3days() {
-		Pageable wholePage = Pageable.unpaged();
+		Pageable wholePage = Pageable.unpaged(); //TODO: find by Page
 		Page<Coupon> coupons = getExpiredAfter3days(wholePage);
 		for (Coupon coupon : coupons) {
 			if (coupon.getUser() != null) {

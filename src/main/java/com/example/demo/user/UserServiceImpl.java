@@ -1,13 +1,10 @@
 package com.example.demo.user;
 
+import com.example.demo.user.dto.UserDto;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -22,10 +19,14 @@ public class UserServiceImpl implements UserService {
 		user.setEmail(email);
 		user.setPassword(password);
 		userRepository.save(user);
-		/*String rawPassword = user.getPassword();
-		String encodedPassword = new BCryptPasswordEncoder().encode(rawPassword);
-		user.setPassword(encodedPassword);
-		userMapper.createUser(user);
-		userMapper.createAuthority(user);*/
+	}
+
+	@Override
+	public Boolean loginUser(UserDto user) {
+		User dbUser = userRepository.findOneByEmail(user.getEmail());
+		if (BCrypt.checkpw(user.getPassword(), dbUser.getPassword())) {
+			return true;
+		}
+		return false;
 	}
 }

@@ -19,12 +19,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -38,7 +40,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @WebMvcTest(CouponApiController.class)
 @WebAppConfiguration()
 @AutoConfigureMockMvc
-@Rollback
+@ActiveProfiles("test")
 public class CouponApiControllerTest {
 
 	private static final MediaType APPLICATION_JSON_UTF8 = new MediaType(
@@ -81,7 +83,8 @@ public class CouponApiControllerTest {
 		Mockito.when(couponService.getCouponsByEmail(Mockito.anyString())).thenReturn(coupons);
 		mockMvc.perform(post("/api/coupon/user/coupon")
 				.contentType(APPLICATION_JSON_UTF8)
-				.content(requestUserDtoJson))
+				.content(requestUserDtoJson)
+				.header("Authorization", "test"))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.data[0].code").value("0"))
 				.andExpect(jsonPath("$.data[1].code").value("1"))
@@ -94,17 +97,17 @@ public class CouponApiControllerTest {
 
 	@Test
 	public void createTest() throws Exception {
-		Mockito.doNothing().when(couponService).create(Mockito.anyInt());
-
 		CountDto countDto = new CountDto();
 		countDto.setCount(3);
+		Mockito.when(couponService.create(Mockito.anyInt())).thenReturn(Arrays.asList(new Coupon[countDto.getCount()]));
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
 		ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
 		String requestJson = ow.writeValueAsString(countDto);
 		mockMvc.perform(post("/api/coupon/create")
 				.contentType(APPLICATION_JSON_UTF8)
-				.content(requestJson))
+				.content(requestJson)
+				.header("Authorization", "test"))
 				.andExpect(status().isOk());
 
 		ArgumentCaptor<Integer> acInteger = ArgumentCaptor.forClass(Integer.class);
@@ -119,7 +122,8 @@ public class CouponApiControllerTest {
 		Mockito.when(couponService.allocate(Mockito.any())).thenReturn(couponDto);
 		mockMvc.perform(post("/api/coupon/allocate")
 				.contentType(APPLICATION_JSON_UTF8)
-				.content(requestUserDtoJson))
+				.content(requestUserDtoJson)
+				.header("Authorization", "test"))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.data.code").value("testCode"));
 
@@ -133,7 +137,8 @@ public class CouponApiControllerTest {
 		Coupon coupon = new Coupon();
 		coupon.setCode("testCode");
 		Mockito.when(couponService.useCoupon(Mockito.anyString())).thenReturn(coupon);
-		mockMvc.perform(put("/api/coupon/use/test"))
+		mockMvc.perform(put("/api/coupon/use/test")
+				.header("Authorization", "test"))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.data.code").value("testCode"));
 
@@ -147,7 +152,8 @@ public class CouponApiControllerTest {
 		Coupon coupon = new Coupon();
 		coupon.setCode("testCode");
 		Mockito.when(couponService.cancelCoupon(Mockito.anyString())).thenReturn(coupon);
-		mockMvc.perform(put("/api/coupon/cancel/test"))
+		mockMvc.perform(put("/api/coupon/cancel/test")
+				.header("Authorization", "test"))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.data.code").value("testCode"));
 

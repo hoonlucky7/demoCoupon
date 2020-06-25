@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'com.example'
-version = '0.0.1-SNAPSHOT'
+version = '0.0.1'
 sourceCompatibility = '1.8'
 
 configurations {
@@ -30,7 +30,10 @@ dependencies {
 	compile("com.querydsl:querydsl-jpa") // querydsl
 	compile("com.querydsl:querydsl-apt") // querydsl
 
-	//implementation group: 'org.mindrot', name: 'jbcrypt', version: '0.3m'
+	//jwt
+	implementation('io.jsonwebtoken:jjwt:0.9.1')
+
+	compile group: 'org.mindrot', name: 'jbcrypt', version: '0.3m'
 
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'mysql:mysql-connector-java'

@@ -4,13 +4,12 @@ import com.example.demo.coupon.Coupon;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.mindrot.jbcrypt.BCrypt;
 
-import javax.annotation.Nullable;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @Entity
@@ -25,6 +24,10 @@ public class User {
 	private String email;
 
 	private String password;
+
+	public void setPassword(String password) {
+		this.password = BCrypt.hashpw(password, BCrypt.gensalt());
+	}
 
 	@OneToMany(mappedBy = "user")
 	private List<Coupon> coupons = new ArrayList<>();
