@@ -17,7 +17,7 @@ public class ScheduleComponent {
     @Scheduled(cron = "0 0 1 * * ?")
     public void scheduleExpiredCoupon() {
         log.info("scheduleExpiredCoupon start");
-        //couponService.getExpiredByToday();
+        couponService.updateExpiredByToday();
         log.info("scheduleExpiredCoupon finish");
     }
 

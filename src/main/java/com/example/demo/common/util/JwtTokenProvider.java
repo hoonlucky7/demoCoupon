@@ -13,7 +13,7 @@ import java.util.Date;
 public class JwtTokenProvider {
     private static final String jwtSecret = "cousec";
 
-    public static final int jwtExpirationInMs = 60000;
+    public static final int jwtExpirationInMs = 7200000; // 2 hour
 
     public String generateToken(String email) {
         Date now = new Date();

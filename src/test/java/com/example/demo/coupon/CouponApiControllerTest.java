@@ -3,6 +3,7 @@ package com.example.demo.coupon;
 import com.example.demo.common.StatusEnum;
 import com.example.demo.coupon.dto.CountDto;
 import com.example.demo.coupon.dto.CouponDto;
+import com.example.demo.user.dto.EmailDto;
 import com.example.demo.user.dto.UserDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,7 +19,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -127,7 +127,7 @@ public class CouponApiControllerTest {
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.data.code").value("testCode"));
 
-		ArgumentCaptor<UserDto> userDtoArgumentCaptor = ArgumentCaptor.forClass(UserDto.class);
+		ArgumentCaptor<EmailDto> userDtoArgumentCaptor = ArgumentCaptor.forClass(EmailDto.class);
 		verify(couponService).allocate(userDtoArgumentCaptor.capture());
 		assertEquals("test@test.com", userDtoArgumentCaptor.getValue().getEmail());
 	}
@@ -139,8 +139,7 @@ public class CouponApiControllerTest {
 		Mockito.when(couponService.useCoupon(Mockito.anyString())).thenReturn(coupon);
 		mockMvc.perform(put("/api/coupon/use/test")
 				.header("Authorization", "test"))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.data.code").value("testCode"));
+				.andExpect(status().isOk());
 
 		ArgumentCaptor<String> stringArgumentCaptor = ArgumentCaptor.forClass(String.class);
 		verify(couponService).useCoupon(stringArgumentCaptor.capture());
@@ -154,8 +153,7 @@ public class CouponApiControllerTest {
 		Mockito.when(couponService.cancelCoupon(Mockito.anyString())).thenReturn(coupon);
 		mockMvc.perform(put("/api/coupon/cancel/test")
 				.header("Authorization", "test"))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.data.code").value("testCode"));
+				.andExpect(status().isOk());
 
 		ArgumentCaptor<String> stringArgumentCaptor = ArgumentCaptor.forClass(String.class);
 		verify(couponService).cancelCoupon(stringArgumentCaptor.capture());

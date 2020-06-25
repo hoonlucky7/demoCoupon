@@ -2,15 +2,13 @@ package com.example.demo.auth;
 
 import com.example.demo.auth.dto.TokenDto;
 import com.example.demo.auth.dto.TokenResult;
+import com.example.demo.common.ErrorCode;
 import com.example.demo.common.util.JwtTokenProvider;
-import com.example.demo.user.User;
-import com.example.demo.user.UserRepository;
+import com.example.demo.exception.ApiException;
 import com.example.demo.user.UserService;
 import com.example.demo.user.dto.UserDto;
-import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
@@ -25,8 +23,8 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	public TokenDto createToken(UserDto userVO) {
-		if (!userService.loginUser(userVO)) {
-			throw new RuntimeException("login fail");
+		if (!userService.checkUser(userVO)) {
+			throw new ApiException(ErrorCode.USER_NOT_FOUND_CODE);
 		}
 		TokenDto tokenDto = new TokenDto();
 		tokenDto.setAccessToken(jwtTokenProvider.generateToken(userVO.getEmail()));

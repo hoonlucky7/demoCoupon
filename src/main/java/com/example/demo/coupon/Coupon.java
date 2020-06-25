@@ -6,7 +6,6 @@ import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.annotation.Nullable;
 import javax.persistence.*;
 import java.util.Date;
 
@@ -15,7 +14,7 @@ import java.util.Date;
 public class Coupon {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column
 	private Long id;
 

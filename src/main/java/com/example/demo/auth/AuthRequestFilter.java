@@ -25,7 +25,7 @@ public class AuthRequestFilter extends OncePerRequestFilter {
 			throws ServletException, IOException {
 		if (request.getRequestURI().contains("swagger")
 				|| request.getRequestURI().equalsIgnoreCase("/v2/api-docs")
-				|| request.getRequestURI().equalsIgnoreCase("/auth/create/token")
+				|| request.getRequestURI().equalsIgnoreCase("/api/auth/create/token")
 				|| request.getRequestURI().equalsIgnoreCase("/api/user/signup")) {
 			chain.doFilter(request, response);
 			return;

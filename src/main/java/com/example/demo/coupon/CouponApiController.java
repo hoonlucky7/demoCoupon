@@ -2,6 +2,7 @@ package com.example.demo.coupon;
 
 import com.example.demo.coupon.dto.CountDto;
 import com.example.demo.coupon.dto.CouponDto;
+import com.example.demo.user.dto.EmailDto;
 import com.example.demo.user.dto.UserDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +26,8 @@ public class CouponApiController {
 	@PostMapping("/user/coupon")
 	public List<CouponDto> getCouponByEmail(
 			@RequestHeader(value="Authorization") String authorization,
-			@RequestBody UserDto userDto) {
-		List<Coupon> coupons = couponService.getCouponsByEmail(userDto.getEmail());
+			@RequestBody EmailDto emailDto) {
+		List<Coupon> coupons = couponService.getCouponsByEmail(emailDto.getEmail());
 
 		List<CouponDto> couponDtos = new ArrayList<>();
 		for (Coupon coupon : coupons) {
@@ -36,7 +37,6 @@ public class CouponApiController {
 		}
 		return couponDtos;
 	}
-
 
 	@PostMapping("/create")
 	public void create(@RequestHeader(value="Authorization") String authorization,
@@ -48,21 +48,21 @@ public class CouponApiController {
 	@PostMapping("/allocate")
 	public CouponDto allocate(
 			@RequestHeader(value="Authorization") String authorization,
-			@RequestBody UserDto userDto) {
-		log.info("coupon allocate - userDto : {}", userDto);
-		return couponService.allocate(userDto);
+			@RequestBody EmailDto emailDto) {
+		log.info("coupon allocate - allocateDto : {}", emailDto);
+		return couponService.allocate(emailDto);
 	}
 
 	@PutMapping("/use/{code}")
-	public Coupon use(@RequestHeader(value="Authorization") String authorization,
+	public void use(@RequestHeader(value="Authorization") String authorization,
 					  @PathVariable String code) {
-		return couponService.useCoupon(code);
+		couponService.useCoupon(code);
 	}
 
 	@PutMapping("/cancel/{code}")
-	public Coupon cancel(@RequestHeader(value="Authorization") String authorization,
+	public void cancel(@RequestHeader(value="Authorization") String authorization,
 						 @PathVariable String code) {
-		return couponService.cancelCoupon(code);
+		couponService.cancelCoupon(code);
 	}
 
 	@GetMapping("/expired")
@@ -70,10 +70,5 @@ public class CouponApiController {
 			@RequestHeader(value="Authorization") String authorization,
 			@PageableDefault(size=10, sort="id",direction = Sort.Direction.DESC) Pageable pageable) {
 		return couponService.getExpiredByToday(pageable);
-	}
-
-	@GetMapping("/sendExpiredAfter3daystest")
-	public void sendExpiredAfter3days(@RequestHeader(value="Authorization") String authorization) {
-		couponService.sendExpiredAfter3days();
 	}
 }

@@ -2,11 +2,12 @@ package com.example.demo.coupon;
 
 import com.example.demo.common.ErrorCode;
 import com.example.demo.common.StatusEnum;
+import com.example.demo.common.util.SequenceGenerator;
 import com.example.demo.coupon.dto.CouponDto;
 import com.example.demo.exception.ApiException;
 import com.example.demo.user.User;
 import com.example.demo.user.UserRepository;
-import com.example.demo.user.dto.UserDto;
+import com.example.demo.user.dto.EmailDto;
 import com.example.demo.common.util.DateUtil;
 import com.example.demo.common.util.FormatUtil;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -17,9 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static com.example.demo.coupon.QCoupon.coupon;
 
@@ -33,6 +32,9 @@ public class CouponServiceImpl implements CouponService {
 	@Autowired
 	UserRepository userRepository;
 
+	@Autowired
+	SequenceGenerator sequenceGenerator;
+
 	@Override
 	public List<Coupon> findAll() {
 		return couponRepository.findAll();
@@ -41,11 +43,10 @@ public class CouponServiceImpl implements CouponService {
 	@Override
 	@Transactional
 	public List<Coupon> create(Integer count) {
-		//TODO : count >= 10000, 쿠폰 발행이 개수가 많아지면 멀티 쓰레딩으로 처리 해야 함
 		List<Coupon> couponList = new ArrayList<>();
 		for (int i = 0; i < count; i++) {
 			Coupon coupon = new Coupon();
-			coupon.setCode("" + System.nanoTime());
+			coupon.setCode(String.valueOf(sequenceGenerator.nextId()));
 			coupon.setExpirationDate(DateUtil.trimPlusDay(3)); // 3일뒤 00:00:00에 만료
 			coupon.setStatus(StatusEnum.N);
 			couponList.add(coupon);
@@ -55,9 +56,9 @@ public class CouponServiceImpl implements CouponService {
 
 	@Override
 	@Transactional
-	public CouponDto allocate(UserDto userDto) {
+	public CouponDto allocate(EmailDto allocateDto) {
 		Coupon coupon = couponRepository.findFirstByStatus(StatusEnum.N);
-		User user = userRepository.findOneByEmail(userDto.getEmail());
+		User user = userRepository.findOneByEmail(allocateDto.getEmail());
 		coupon.setUser(user);
 		coupon.setStatus(StatusEnum.A);
 		couponRepository.save(coupon);
@@ -79,7 +80,7 @@ public class CouponServiceImpl implements CouponService {
 	@Override
 	@Transactional
 	public Coupon useCoupon(String code) {
-		Coupon coupon = couponRepository.findOneByCode(code);
+		Coupon coupon = couponRepository.findFirstByCode(code);
 		validCoupon(coupon);
 		coupon.setUseDate(new Date());
 		coupon.setStatus(StatusEnum.Y);
@@ -89,10 +90,22 @@ public class CouponServiceImpl implements CouponService {
 	@Override
 	@Transactional
 	public Coupon cancelCoupon(String code) {
-		Coupon coupon = couponRepository.findOneByCode(code);
+		Coupon coupon = couponRepository.findFirstByCode(code);
 		validCoupon(coupon);
 		coupon.setStatus(StatusEnum.N);
 		return couponRepository.save(coupon);
+	}
+
+	@Override
+	public void updateExpiredByToday() {
+		BooleanExpression predicate = coupon.isNotNull()
+				.and(coupon.expirationDate.lt(DateUtil.trimPlusDay(0)));
+
+		List<Coupon> coupons = couponRepository.findAll(predicate);
+		for (Coupon coupon : coupons) {
+			coupon.setStatus(StatusEnum.E);
+		}
+		couponRepository.saveAll(coupons);
 	}
 
 	@Override

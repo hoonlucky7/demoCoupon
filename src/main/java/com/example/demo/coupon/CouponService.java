@@ -1,7 +1,7 @@
 package com.example.demo.coupon;
 
 import com.example.demo.coupon.dto.CouponDto;
-import com.example.demo.user.dto.UserDto;
+import com.example.demo.user.dto.EmailDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -13,7 +13,7 @@ public interface CouponService {
 
 	List<Coupon> create(Integer count);
 
-	CouponDto allocate(UserDto userDto);
+	CouponDto allocate(EmailDto emailDto);
 
 	List<Coupon> getCouponsByEmail(String email);
 
@@ -21,9 +21,11 @@ public interface CouponService {
 
 	Coupon cancelCoupon(String code);
 
-	Page<Coupon> getExpiredByToday(Pageable pageable);
+	void updateExpiredByToday();
 
 	Page<Coupon> getExpiredAfter3days(Pageable pageable);
 
 	void sendExpiredAfter3days();
+
+	Page<Coupon> getExpiredByToday(Pageable pageable);
 }
