@@ -87,6 +87,9 @@ public class CouponServiceImpl implements CouponService {
 	@Transactional
 	public Coupon cancelCoupon(String code) {
 		Coupon coupon = couponRepository.findFirstByCode(code);
+		if (coupon.getStatus() == StatusEnum.N) {
+			throw new ApiException(ErrorCode.COUPON_NOT_FOUND);
+		}
 		validCoupon(coupon);
 		coupon.setStatus(StatusEnum.N);
 		return couponRepository.save(coupon);

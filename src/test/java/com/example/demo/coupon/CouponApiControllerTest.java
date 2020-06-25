@@ -159,9 +159,4 @@ public class CouponApiControllerTest {
 		verify(couponService).cancelCoupon(stringArgumentCaptor.capture());
 		assertEquals("test", stringArgumentCaptor.getValue());
 	}
-	/*
-	@GetMapping("/expired")
-	public Page<Coupon> getExpiredByToday(@PageableDefault(size=10, sort="id",direction = Sort.Direction.DESC) Pageable pageable) {
-		return couponService.getExpiredByToday(pageable);
-	}*/
 }

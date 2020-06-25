@@ -172,21 +172,4 @@ public class CouponRepositoryTest {
 		verify(couponRepository).save(couponArgumentCaptor.capture());
 		assertEquals(StatusEnum.N, couponArgumentCaptor.getValue().getStatus());
 	}
-
-	@Test
-	public void getExpiredByTodayTest() {
-		/*Pageable pageable = new PageRequest(0, 10);
-		Page<Coupon> page = couponService.getExpiredByToday(pageable);
-		assertEquals(page.getSize(), 10);*/
-	}
-
-	@Test
-	public void sendExpiredAfter3daysTest() {
-
-	}
-
-	@Test
-	public void getExpiredAfter3daysTest() {
-
-	}
 }
