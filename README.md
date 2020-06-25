@@ -1,5 +1,7 @@
 1) mysql 세팅
+
 $ sudo mysql
+
 mysql> create database COUPON_WEB;
 
 mysql> create user 'hoon'@'%' identified by '1q2w3e';
